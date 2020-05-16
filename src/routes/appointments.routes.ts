@@ -10,28 +10,23 @@ const appointmentRouter = Router();
 appointmentRouter.use(ensureAuthentication);
 
 appointmentRouter.post('/', async (request, response) => {
-  try {
-    const { provider_id, date } = request.body;
+  const { provider_id, date } = request.body;
 
-    // o parseISO converte a data em um formato date nativo do javascript
-    // o StartOfHour coloca tudo, além das horas, em 0. OU seja, coloca no começo daquela hora.
-    // exemplo: 16:59:59 vai virar 16:00:00
-    const convertedDate = parseISO(date);
-    const createAppointmentService = new CreateAppointmentService();
+  // o parseISO converte a data em um formato date nativo do javascript
+  // o StartOfHour coloca tudo, além das horas, em 0. OU seja, coloca no começo daquela hora.
+  // exemplo: 16:59:59 vai virar 16:00:00
+  const convertedDate = parseISO(date);
+  const createAppointmentService = new CreateAppointmentService();
 
-    const appointment = await createAppointmentService.execute({
-      provider_id,
-      date: convertedDate,
-    });
+  const appointment = await createAppointmentService.execute({
+    provider_id,
+    date: convertedDate,
+  });
 
-    return response.json(appointment);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(appointment);
 });
 
 appointmentRouter.get('/', async (request, response) => {
-  console.log(request.user);
   const appointmentsRepository = getCustomRepository(AppointmentsRepository);
   const appointments = await appointmentsRepository.find();
 

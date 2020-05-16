@@ -3,6 +3,8 @@ import { verify } from 'jsonwebtoken';
 
 import authConfig from '../config/auth';
 
+import AppError from '../errors/AppError';
+
 interface TokenPayload {
   iat: number;
   exp: number;
@@ -17,7 +19,7 @@ export default function ensureAuthentication(
   const tokenAuth = request.headers.authorization;
 
   if (!tokenAuth) {
-    throw new Error('JWT token is missing!');
+    throw new AppError('JWT token is missing!', 401);
   }
   // Formato da string do token: Bearer asoknd28u3hrjnnd13r
   // Existe um espaço entre o bearer e o token, para isso, vamos desestruturar
@@ -41,6 +43,6 @@ export default function ensureAuthentication(
 
     return next();
   } catch {
-    throw new Error('Invalid JWT token!');
+    throw new AppError('Invalid JWT token!', 401);
   }
 }

@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import User from '../models/User';
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
 
 interface RequestDTO {
   user_id: string;
@@ -19,7 +20,7 @@ export default class UpdateUserAvatarService {
     const user = await userRepository.findOne({ where: { id: user_id } });
 
     if (!user) {
-      throw new Error('logged user is not valid!');
+      throw new AppError('logged user is not valid!', 401);
     }
 
     if (user.avatar) {

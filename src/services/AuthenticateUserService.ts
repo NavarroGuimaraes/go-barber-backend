@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import User from '../models/User';
 import authConfig from '../config/auth';
+import AppError from '../errors/AppError';
 
 interface RequestDTO {
   email: string;
@@ -21,13 +22,13 @@ class AuthenticateUserService {
     });
 
     if (!user) {
-      throw new Error('email ou senha inválidos');
+      throw new AppError('email ou senha inválidos', 401);
     }
 
     const passwordMathed = await compare(password, user.password);
 
     if (!passwordMathed) {
-      throw new Error('email ou senha inválidos');
+      throw new AppError('email ou senha inválidos', 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;
